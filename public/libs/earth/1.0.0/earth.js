@@ -806,7 +806,7 @@ var latitude, longitude;
         longitude = λ;
 
         var xmlHttp = new XMLHttpRequest();
-        var theUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1"
+        var theUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1&accept-language=en"
         xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
         xmlHttp.send( null );
         var content = JSON.parse(xmlHttp.responseText);
