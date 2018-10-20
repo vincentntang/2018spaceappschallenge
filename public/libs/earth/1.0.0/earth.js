@@ -6,6 +6,9 @@
  *
  * https://github.com/cambecc/earth
  */
+
+var latitude, longitude;
+
 (function() {
     "use strict";
 
@@ -799,6 +802,18 @@
             return;
         }
 
+        latitude = φ;
+        longitude = λ;
+
+        var xmlHttp = new XMLHttpRequest();
+        var theUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1"
+        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+        xmlHttp.send( null );
+        var content = JSON.parse(xmlHttp.responseText);
+        if(content.hasOwnProperty("address")){
+            console.log(content.address.country)
+        }
+        
         clearLocationDetails(false);  // clean the slate
         activeLocation = {point: point, coord: coord};  // remember where the current location is
 
@@ -820,9 +835,15 @@
             }
         }
     }
+    
+    function showDetailsDialog(){
+      document.getElementById('region-summary-modal');
+      jQuery('#region-summary-modal');
+    }
 
     function updateLocationDetails() {
         showLocationDetails(activeLocation.point, activeLocation.coord);
+        showDetailsDialog(activeLocation.point, activeLocation.coord);
     }
 
     function clearLocationDetails(clearEverything) {
