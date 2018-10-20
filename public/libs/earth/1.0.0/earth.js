@@ -837,8 +837,11 @@ var latitude, longitude;
     }
     
     function showDetailsDialog(){
-      document.getElementById('region-summary-modal');
-      jQuery('#region-summary-modal');
+      if(jQuery('#foreground path[d]').length > 0){
+        jQuery('#region-summary-modal').addClass('open-dialog');
+      } else if ( jQuery('#region-summary-modal').hasClass('open-dialog') ) {
+        jQuery('#region-summary-modal').addRemove('open-dialog');
+      }
     }
 
     function updateLocationDetails() {
