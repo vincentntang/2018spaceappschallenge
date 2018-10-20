@@ -838,7 +838,7 @@ var latitude, longitude;
     
     function showDetailsDialog(){
       document.getElementById('region-summary-modal');
-      jQuery('#region-summary-modal');
+      // jQuery('#region-summary-modal');
     }
 
     function updateLocationDetails() {
