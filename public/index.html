@@ -21,6 +21,7 @@
     <link rel="alternate" hreflang="x-default" href="http://earth.nullschool.net/"/>
     <link rel="alternate" hreflang="ja" href="http://earth.nullschool.net/jp/"/>
     <script src="/libs/vendor/jquery-3.3.1.min.js" charset="utf-8"></script>
+    <script src="/libs/vendor/bootstrap.min.js" charset="utf-8"></script>
 </head>
 <body data-lang="en">
 
@@ -33,15 +34,24 @@
         <svg id="foreground" class="fill-screen" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
     </div>
     
-    <div class="card" id="region-summary-modal">
-      <img class="card-img-top" src="..." alt="Card image cap">
-      <!-- <div aria-label="Close" class="close">x</div> -->
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+    <div id="region-modal-summary-modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title text-secondary">Modal title</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-secondary">
+            <p>Modal body text goes here.</p>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
-      
     </div>
 
     <div id="sponsor" class="invisible">
