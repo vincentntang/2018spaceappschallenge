@@ -60,12 +60,12 @@ class DataNasa {
         this.description = data["description"];
         this.center = data["center"];
         this.media_type = data["media_type"];
-        // this.multimedia_url = input["href"];
         this.multimedia_url = input["href"];
     }
 }
 
 function getNasaStuff(place, req, res){
+    const quantity = 10;
     var url = "https://images-api.nasa.gov/search?q=" + place;
 
     request(url, function (error, response, body){
@@ -76,11 +76,9 @@ function getNasaStuff(place, req, res){
         //Request success
         else {
             var items = JSON.parse(body)["collection"]["items"];
-
-            var readyToSend = [];
             var ready = 0;
 
-            for (var i = 0; i < items.length; i++) {
+            for (var i = 0; i < quantity-1; i++) {
                 items[i] = new DataNasa(items[i]);
 
                 request(items[i].multimedia_url, function (error, response, body){
@@ -98,7 +96,7 @@ function getNasaStuff(place, req, res){
                     }
 
                     //Do anyways - When finished send everything
-                    if(ready==items.length-1){
+                    if(ready==quantity-1){
                         items = items.filter(x => x.media_type=="image");
                         res.json({
                             "Country": place,
