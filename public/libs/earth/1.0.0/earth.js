@@ -74,7 +74,6 @@ var globe, view, configuration;
     }
 
     // Construct the page's main internal components:
-
     configuration =
         µ.buildConfiguration(globes, products.overlayTypes);  // holds the page's current configuration settings
     var inputController = buildInputController();             // interprets drag/zoom operations
