@@ -7,8 +7,6 @@
  * https://github.com/cambecc/earth
  */
 
-var latitude, longitude;
-
 (function() {
     "use strict";
 
@@ -803,26 +801,7 @@ var latitude, longitude;
             return;
         }
 
-        latitude = φ;
-        longitude = λ;
-
-        var xmlHttp = new XMLHttpRequest();
-        var theUrl = 
-        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-        xmlHttp.send( null );
-        var content = JSON.parse(xmlHttp.responseText);
-        if(content.hasOwnProperty("address")){
-            console.log(content.address.country);
-
-            xmlHttp = new XMLHttpRequest();
-            theUrl = "http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles="+content.address.country;
-            xmlHttp.open( "GET", theUrl, false );
-            xmlHttp.send(null);
-            content = JSON.parse(xmlHttp.responseText);
-            console.log(content);
-        }
-
-        
+        getData(φ, λ);
         
         clearLocationDetails(false);  // clean the slate
         activeLocation = {point: point, coord: coord};  // remember where the current location is
@@ -844,6 +823,31 @@ var latitude, longitude;
                 }
             }
         }
+    }
+
+    function getData(latitude, longitude) {
+        httpGetAsync("/api/basic?lat="+latitude+"&lon="+longitude, function (input) {
+            var content = JSON.parse(input);
+
+            if(!content.hasOwnProperty("Error")){
+                var country = content["Country"]
+                console.log(country);
+                httpGetAsync("/api/NASA/"+country, function(input){
+                    console.log("Ready pictures from "+country);
+                });
+            }
+        });
+    }
+
+    function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
     }
     
     function showDetailsDialog(){

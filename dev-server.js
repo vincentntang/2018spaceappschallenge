@@ -57,9 +57,11 @@ app.get('/api/NASA/:place', function (req, res){
     var place = req.params.place;
     var url = "https://images-api.nasa.gov/search?q=" + place;
     request(url, function (error, response, body){
+        //Request error
         if (error) {
-            res.json({"Error":"The NASA's servers are not working correctly"});
+            res.json({"Error":"There has been some problems with NASA's servers"});
         }
+        //Request success
         else {
             var items = JSON.parse(body)["collection"]["items"];
             var readyToSend = [];
@@ -69,20 +71,25 @@ app.get('/api/NASA/:place', function (req, res){
                 var item = new DataNasa(items[i]);
 
                 request(item.multimedia_url, function (error, response, body){
-                    item.multimedia_url = JSON.parse(body)[0];
+                    //Error while trying to pull image
+                    if(error) {
+                        ready += 1
+                    }
+                    //Request success
+                    else {
+                        item.multimedia_url = JSON.parse(body)[0];
 
-                    ready += 1;
+                        ready += 1;
 
-                    readyToSend.push(item);
-
+                        readyToSend.push(item);
+                    }
+                    //Do anyways
                     if(ready==items.length-1){
                         res.json(readyToSend);
                     }
                 });
             }
         }
-
-        
     });
 
     class DataNasa {
@@ -104,15 +111,40 @@ app.get('/api/basic', function(req, res){
 
     //I have to cache the information
     const options = {
-        url: "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1&accept-language=en",
+        url: "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=1&addressdetails=1&accept-language=en",
         headers: {
             'User-Agent': 'Orbis Pictus'
         }
     }
 
+    //Nominatim API wikipedia
+    //https://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding
     request(options, function(error, response, body){
-        var content = JSON.parse(body);
-        res.json({"Country": content["address"]["country"]});
+        //Request errors
+        if(error){
+            res.json({
+                "Error": "Something has happend to Nominatim API"
+            });
+        }
+
+        //No errors
+        else {
+            var content = JSON.parse(body);
+            //User hits land
+            console.log(content);
+            if(content.hasOwnProperty("address")) {
+                res.json({
+                    "Country": content["address"]["country"]
+                });
+            }
+            //User hits ocean
+            else {
+                res.json({
+                    "Error": "The user has clicked on water"
+                });
+            }
+        }
+        
 
 
         /*
