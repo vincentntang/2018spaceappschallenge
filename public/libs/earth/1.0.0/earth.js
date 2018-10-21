@@ -7,6 +7,13 @@
  * https://github.com/cambecc/earth
  */
 
+var modalContent = {
+  title: '',
+  body: '',
+  images: [],
+  video: ''
+};
+
 (function() {
     "use strict";
 
@@ -316,7 +323,6 @@
                 }
                 mark.datum({type: "Point", coordinates: coord}).attr("d", path);
             }
-            showDetailsDialog();
         }
 
         // Draw the location mark if one is currently visible.
@@ -787,6 +793,54 @@
     // Stores the point and coordinate of the currently visible location. This is used to update the location
     // details when the field changes.
     var activeLocation = {};
+    
+    function populateModalContent(modalValues){
+      
+      // console.log('respValue',modalValues);
+      
+      modalContent['title'] = modalValues["Country"];
+      modalContent['body'] = modalValues["Country"];
+      
+      var media = [];
+      console.log('modalValues', modalValues);
+      console.log('modalValues[media]', modalValues['media'] );
+      console.log('modalValues[media][0]', modalValues['media'][0] );
+      
+      var previewImage = modalValues['media'][0]['multimedia_url'];
+      var previewDescription = modalValues['media'][0]['description'];
+      // console.log('previewImage', previewImage);
+      
+      media.push( previewImage ); // push only the first image
+      
+      modalContent['images'] = media;
+      modalContent['body'] = previewDescription;
+      
+      // console.log('modalContent after preview', modalContent);
+        
+      // console.log('respCont',modalContent);
+      
+      showDetailsDialog();
+      
+      // var modalContent = {
+      //   title: '',
+      //   body: '',
+      //   images: '',
+      //   video: ''
+      // };
+    }
+    
+    // function getModalContentForLocation(latitude, longitude){
+    //   var url = window.location.origin + '/api/basic?lat=' + latitude + '&lon=' + longitude;
+    //   $.get({
+    //     'url': url,
+    //   })
+    //   .done(function(response){
+    //     populateModalContent(response);
+    //   })
+    //   .fail(function(error) {
+    //     console.log(error);
+    //   });
+    // }
 
     /**
      * Display a local data callout at the given [x, y] point and its corresponding [lon, lat] coordinates.
@@ -833,7 +887,13 @@
                 var country = content["Country"]
                 console.log(country);
                 httpGetAsync("/api/NASA/"+country, function(input){
-                    console.log("Ready pictures from "+country);
+                    
+                    var contentValues = {
+                      "Country": country,
+                      'media': JSON.parse(input)
+                    }
+                    
+                    populateModalContent(contentValues);
                 });
             }
         });
@@ -851,11 +911,34 @@
     }
     
     function showDetailsDialog(){
+      
       if(jQuery('#foreground path[d]').length > 0){
-        // jQuery('#region-summary-modal').addClass('open-dialog');
+        
+        if (modalContent['title'] != '' ){
+          $('#region-modal-summary-modal .modal-title').text(modalContent['title']);
+          // console.log('title',modalContent['title']);
+        }
+        
+        if (modalContent['body'] != '' ){
+          $('#region-modal-summary-modal .modal-body .modal-body-text').text(modalContent['body']);
+          // console.log('body',modalContent['body']);
+        }
+        
+        if (modalContent['images'].length > 0){
+          var previewUrl = modalContent['images'][0];
+          $('#region-modal-summary-modal .modal-body .modal-body-preview-image').prop('src', previewUrl);
+          // console.log('image', previewUrl);
+        }
+        
+        // title: '',
+        // body: '',
+        // images: '',
+        // video: ''
+        
         $('#region-modal-summary-modal').modal('toggle');
       } else if ( jQuery('#region-summary-modal').hasClass('open-dialog') ) {
-        jQuery('#region-summary-modal').removeClass('open-dialog');
+        
+        $('#region-modal-summary-modal').modal('toggle');
       }
     }
 
@@ -930,14 +1013,14 @@
             .attr("width", (d3.select("#menu").node().offsetWidth - label.offsetWidth) * 0.97)
             .attr("height", label.offsetHeight / 2);
 
-        d3.select("#show-menu").on("click", function() {
-            if (µ.isEmbeddedInIFrame()) {
-                window.open("http://earth.nullschool.net/" + window.location.hash, "_blank");
-            }
-            else {
-                d3.select("#menu").classed("invisible", !d3.select("#menu").classed("invisible"));
-            }
-        });
+        // d3.select("#show-menu").on("click", function() {
+        //     if (µ.isEmbeddedInIFrame()) {
+        //         window.open("http://earth.nullschool.net/" + window.location.hash, "_blank");
+        //     }
+        //     else {
+        //         d3.select("#menu").classed("invisible", !d3.select("#menu").classed("invisible"));
+        //     }
+        // });
 
         if (µ.isFF()) {
             // Workaround FF performance issue of slow click behavior on map having thick coastlines.
