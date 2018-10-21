@@ -7,6 +7,8 @@
  * https://github.com/cambecc/earth
  */
 
+var globe, view, configuration;
+
 (function() {
     "use strict";
 
@@ -32,7 +34,7 @@
     var REMAINING = "▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫";   // glyphs for remaining progress bar
     var COMPLETED = "▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪";   // glyphs for completed progress bar
 
-    var view = µ.view();
+    view = µ.view();
     var log = µ.log();
 
     /**
@@ -73,7 +75,7 @@
 
     // Construct the page's main internal components:
 
-    var configuration =
+    configuration =
         µ.buildConfiguration(globes, products.overlayTypes);  // holds the page's current configuration settings
     var inputController = buildInputController();             // interprets drag/zoom operations
     var meshAgent = newAgent();      // map data for the earth
@@ -107,7 +109,8 @@
      * for normal clicks. Spurious moves emit no events.
      */
     function buildInputController() {
-        var globe, op = null;
+        var op = null;
+        globe = null;
 
         /**
          * @returns {Object} an object to represent the state for one move operation.
