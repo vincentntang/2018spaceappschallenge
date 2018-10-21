@@ -60,6 +60,7 @@ class DataNasa {
         this.description = data["description"];
         this.center = data["center"];
         this.media_type = data["media_type"];
+        // this.multimedia_url = input["href"];
         this.multimedia_url = input["href"];
     }
 }
@@ -75,6 +76,7 @@ function getNasaStuff(place, req, res){
         //Request success
         else {
             var items = JSON.parse(body)["collection"]["items"];
+
             var readyToSend = [];
             var ready = 0;
 
@@ -89,13 +91,15 @@ function getNasaStuff(place, req, res){
                     }
                     //Request success
                     else {
-                        items[ready].multimedia_url = JSON.parse(body)[0];
+                        if(items[ready].media_type == "image")
+                            items[ready].multimedia_url = JSON.parse(body)[JSON.parse(body).length - 4];
 
                         ready += 1;
                     }
 
                     //Do anyways - When finished send everything
                     if(ready==items.length-1){
+                        items = items.filter(x => x.media_type=="image");
                         res.json({
                             "Country": place,
                             "Items": items
@@ -146,6 +150,10 @@ app.get('/api/basic', function(req, res){
             }
         }
     });
+});
+
+app.get('/api/gravity', function(req, res){
+
 });
 
 
