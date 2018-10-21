@@ -318,6 +318,7 @@ var latitude, longitude;
                 }
                 mark.datum({type: "Point", coordinates: coord}).attr("d", path);
             }
+            showDetailsDialog();
         }
 
         // Draw the location mark if one is currently visible.
@@ -838,15 +839,15 @@ var latitude, longitude;
     
     function showDetailsDialog(){
       if(jQuery('#foreground path[d]').length > 0){
-        jQuery('#region-summary-modal').addClass('open-dialog');
+        // jQuery('#region-summary-modal').addClass('open-dialog');
+        $('#region-modal-summary-modal').modal('toggle');
       } else if ( jQuery('#region-summary-modal').hasClass('open-dialog') ) {
-        jQuery('#region-summary-modal').addRemove('open-dialog');
+        jQuery('#region-summary-modal').removeClass('open-dialog');
       }
     }
 
     function updateLocationDetails() {
         showLocationDetails(activeLocation.point, activeLocation.coord);
-        showDetailsDialog(activeLocation.point, activeLocation.coord);
     }
 
     function clearLocationDetails(clearEverything) {
@@ -1030,6 +1031,7 @@ var latitude, longitude;
 
         // Add event handlers for showing, updating, and removing location details.
         inputController.on("click", showLocationDetails);
+        
         fieldAgent.on("update", updateLocationDetails);
         d3.select("#location-close").on("click", _.partial(clearLocationDetails, true));
 
