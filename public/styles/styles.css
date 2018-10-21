@@ -6832,8 +6832,10 @@ svg {
 
 #region-modal-summary-modal .modal-dialog {
   position: absolute;
-  right: 5rem;
   bottom: 5rem; }
+  @media screen and (min-width: 576px) {
+    #region-modal-summary-modal .modal-dialog {
+      right: 5rem; } }
   #region-modal-summary-modal .modal-dialog .modal-title {
     font-weight: 700;
     font-size: 2rem; }

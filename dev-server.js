@@ -41,7 +41,7 @@ function logger() {
         '":user-agent" :referrer :req[cf-ray] :req[accept-encoding]\\n:request-all\\n\\n:response-all\\n');
 }
 
-var port = process.argv[2];
+var port = 8080;
 var express = require("express");
 var app = express();
 var request = require("request");
@@ -89,20 +89,20 @@ function getNasaStuff(place, req, res){
                     }
                     //Request success
                     else {
-                        if(items[ready].media_type == "image")
+                        if(items[ready] && typeof(items[ready].media_type) != 'undefined' && items[ready].media_type == "image")
                             items[ready].multimedia_url = JSON.parse(body)[JSON.parse(body).length - 4];
 
                         ready += 1;
                     }
 
                     //Do anyways - When finished send everything
-                    if(ready==items.length-1){
-                        items = items.filter(x => x.media_type=="image");
-                        res.json({
-                            "Country": place,
-                            "Items": items
-                        });
-                    }
+                    
+                    items = items.filter(x => x.media_type=="image");
+                    res.json({
+                        "Country": place,
+                        "Items": items
+                    });
+                    
                 });
             }
         }

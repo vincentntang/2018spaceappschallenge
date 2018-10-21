@@ -221,8 +221,11 @@ canvas {
 #region-modal-summary-modal {
   .modal-dialog {
     position: absolute;
-    right:5rem;
-    bottom:5rem;
+    bottom: 5rem;
+    
+    @media screen and (min-width: 576px){
+      right: 5rem;
+    }
     
     .modal-title {
       font-weight: 700;

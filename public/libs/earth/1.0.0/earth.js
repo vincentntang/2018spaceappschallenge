@@ -796,51 +796,39 @@ var modalContent = {
     
     function populateModalContent(modalValues){
       
-      // console.log('respValue',modalValues);
       
-      modalContent['title'] = modalValues["Country"];
       modalContent['body'] = modalValues["Country"];
       
       var media = [];
       console.log('modalValues', modalValues);
-      console.log('modalValues[media]', modalValues['media'] );
-      console.log('modalValues[media][0]', modalValues['media'][0] );
+      console.log('modalValues[media]', modalValues['Items'] );
+      console.log('modalValues[media][0]', modalValues['Items'][0] );
       
-      var previewImage = modalValues['media'][0]['multimedia_url'];
-      var previewDescription = modalValues['media'][0]['description'];
+      var previewImage = modalValues['Items'][0]['multimedia_url'];
+      var previewDescription = modalValues['Items'][0]['description'];
       // console.log('previewImage', previewImage);
       
       media.push( previewImage ); // push only the first image
       
+      modalContent['title'] = modalValues["Country"];
       modalContent['images'] = media;
       modalContent['body'] = previewDescription;
       
-      // console.log('modalContent after preview', modalContent);
-        
-      // console.log('respCont',modalContent);
       
       showDetailsDialog();
       
-      // var modalContent = {
-      //   title: '',
-      //   body: '',
-      //   images: '',
-      //   video: ''
-      // };
     }
     
-    // function getModalContentForLocation(latitude, longitude){
-    //   var url = window.location.origin + '/api/basic?lat=' + latitude + '&lon=' + longitude;
-    //   $.get({
-    //     'url': url,
-    //   })
-    //   .done(function(response){
-    //     populateModalContent(response);
-    //   })
-    //   .fail(function(error) {
-    //     console.log(error);
-    //   });
-    // }
+    function getModalData(point, coord) {
+        point = point || [];
+        coord = coord || [];
+        var grids = gridAgent.value(), field = fieldAgent.value(), λ = coord[0], φ = coord[1];
+        if (!field || !field.isInsideBoundary(point[0], point[1])) {
+            return;
+        }
+
+        getData(φ, λ);
+      }
 
     /**
      * Display a local data callout at the given [x, y] point and its corresponding [lon, lat] coordinates.
@@ -854,64 +842,6 @@ var modalContent = {
         if (!field || !field.isInsideBoundary(point[0], point[1])) {
             return;
         }
-
-        latitude = φ;
-        longitude = λ;
-
-        //var xmlHttp = new XMLHttpRequest();
-        //var theUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1&accept-language=en"
-        //xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-        //xmlHttp.send( null );
-        //var content = JSON.parse(xmlHttp.responseText);
-        //if(content.hasOwnProperty("address")){
-        //    console.log(content.address.country)
-        //}
-        //var countryCall = content.address.country;
-        //console.log(countryCall);
-        //console.log("homeaddress");
-        //$(document).ready(() => {
-          //  $('body').click(() => {
-          //    var searchTerm = countryCall;
-              //API url with search term
-          //    var baseUrl ="https://en.wikipedia.org/w/api.php?action=opensearch&search=" + searchTerm + "&format=json&callback=?";
-              
-          //    $.ajax({
-          //      type:"GET",
-          //      url: baseUrl,
-          //      async: false,
-          //      dataType: "json",
-          //      success: (data) => {
-                  // console.log(data[1][0]); // Title Item 1
-                  // console.log(data[2][0]); // Description Item 1
-                  // console.log(data[3][0]); // Link Item 1
-                  /* output JSON items */
-                //   $('#output').empty();
-                //   for (var i=0; i<data[1].length; i++){
-                //     $('#output').append('<h3>' + data[1][i] + '</h3>'); // Title
-                //     $('#output').append('<p>' + data[2][i] + '</p>'); // Descr
-                //     $('#output').append('<a href="' + data[3][i] + '">' + data[3][i] +'</a>'); // url
-                //     $('#output').append('<hr>'); 
-                //   }
-                //   $("#searchTerm").val('');
-          //      console.log(data);
-          //        
-          //      }, //end success
-          //      error: (errorMessage) => {
-          //        alert("Error");
-          //      }
-          //    }); // end ajax
-          //  }); // end click
-          //  
-          //  /* Enter Button = 13 */
-          //  $("#searchTerm").keypress((e) => {
-          //    if(e.which==13){
-          //      $("#search").click();
-          //    }
-          //  });
-          //  
-          //}); // end ready
-
-        getData(φ, λ);
 
         
         clearLocationDetails(false);  // clean the slate
@@ -945,8 +875,13 @@ var modalContent = {
                 var items = content["Items"];
                 console.log(country);
                 console.log(`There are ${items.length} pictures of ${country}`);
+                console.log('content',content);
+                
+                populateModalContent(content);
+            } else {
             }
         });
+        
     }
 
     function httpGetAsync(theUrl, callback)
@@ -1177,6 +1112,7 @@ var modalContent = {
 
         // Add event handlers for showing, updating, and removing location details.
         inputController.on("click", showLocationDetails);
+        inputController.on("click", getModalData);
         
         fieldAgent.on("update", updateLocationDetails);
         d3.select("#location-close").on("click", _.partial(clearLocationDetails, true));
