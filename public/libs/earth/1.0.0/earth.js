@@ -941,17 +941,10 @@ var modalContent = {
             var content = JSON.parse(input);
 
             if(!content.hasOwnProperty("Error")){
-                var country = content["Country"]
+                var country = content["Country"];
+                var items = content["Items"];
                 console.log(country);
-                httpGetAsync("/api/NASA/"+country, function(input){
-                    
-                    var contentValues = {
-                      "Country": country,
-                      'media': JSON.parse(input)
-                    }
-                    
-                    populateModalContent(contentValues);
-                });
+                console.log(`There are ${items.length} pictures of ${country}`);
             }
         });
     }
