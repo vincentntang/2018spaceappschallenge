@@ -21,6 +21,7 @@
     <link rel="alternate" hreflang="x-default" href="http://earth.nullschool.net/"/>
     <link rel="alternate" hreflang="ja" href="http://earth.nullschool.net/jp/"/>
     <script src="/libs/vendor/jquery-3.3.1.min.js" charset="utf-8"></script>
+    <script src="/libs/vendor/bootstrap.min.js" charset="utf-8"></script>
 </head>
 <body data-lang="en">
 
@@ -33,15 +34,26 @@
         <svg id="foreground" class="fill-screen" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
     </div>
     
-    <div id="region-summary-modal">
-      <div aria-label="Close" class="close">x</div>
-      
-      <div class="preview-image">
+    <div id="region-modal-summary-modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title text-secondary">Modal title</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          
+          <div class="modal-body text-secondary">
+            <img class="modal-body-preview-image" src="" />
+            <p class="modal-body-text">Modal body text goes here.</p>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
-      
-      <div class="preview-text">
-      </div>
-      
     </div>
 
     <div id="sponsor" class="invisible">
@@ -67,7 +79,6 @@
         </div>
 
         <p id="earth">
-            <span id="show-menu" class="text-button" title="menu">earth</span>
             <span id="progress" class="invisible"></span>
         </p>
 

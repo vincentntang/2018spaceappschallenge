@@ -7,7 +7,12 @@
  * https://github.com/cambecc/earth
  */
 
-var latitude, longitude;
+var modalContent = {
+  title: '',
+  body: '',
+  images: [],
+  video: ''
+};
 
 (function() {
     "use strict";
@@ -788,6 +793,54 @@ var latitude, longitude;
     // Stores the point and coordinate of the currently visible location. This is used to update the location
     // details when the field changes.
     var activeLocation = {};
+    
+    function populateModalContent(modalValues){
+      
+      // console.log('respValue',modalValues);
+      
+      modalContent['title'] = modalValues["Country"];
+      modalContent['body'] = modalValues["Country"];
+      
+      var media = [];
+      console.log('modalValues', modalValues);
+      console.log('modalValues[media]', modalValues['media'] );
+      console.log('modalValues[media][0]', modalValues['media'][0] );
+      
+      var previewImage = modalValues['media'][0]['multimedia_url'];
+      var previewDescription = modalValues['media'][0]['description'];
+      // console.log('previewImage', previewImage);
+      
+      media.push( previewImage ); // push only the first image
+      
+      modalContent['images'] = media;
+      modalContent['body'] = previewDescription;
+      
+      // console.log('modalContent after preview', modalContent);
+        
+      // console.log('respCont',modalContent);
+      
+      showDetailsDialog();
+      
+      // var modalContent = {
+      //   title: '',
+      //   body: '',
+      //   images: '',
+      //   video: ''
+      // };
+    }
+    
+    // function getModalContentForLocation(latitude, longitude){
+    //   var url = window.location.origin + '/api/basic?lat=' + latitude + '&lon=' + longitude;
+    //   $.get({
+    //     'url': url,
+    //   })
+    //   .done(function(response){
+    //     populateModalContent(response);
+    //   })
+    //   .fail(function(error) {
+    //     console.log(error);
+    //   });
+    // }
 
     /**
      * Display a local data callout at the given [x, y] point and its corresponding [lon, lat] coordinates.
@@ -805,29 +858,29 @@ var latitude, longitude;
         latitude = φ;
         longitude = λ;
 
-        var xmlHttp = new XMLHttpRequest();
-        var theUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1&accept-language=en"
-        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-        xmlHttp.send( null );
-        var content = JSON.parse(xmlHttp.responseText);
-        if(content.hasOwnProperty("address")){
-            console.log(content.address.country)
-        }
-        var countryCall = content.address.country;
-        console.log(countryCall);
-        console.log("homeaddress");
-        $(document).ready(() => {
-            $('body').click(() => {
-              var searchTerm = countryCall;
+        //var xmlHttp = new XMLHttpRequest();
+        //var theUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=18&addressdetails=1&accept-language=en"
+        //xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+        //xmlHttp.send( null );
+        //var content = JSON.parse(xmlHttp.responseText);
+        //if(content.hasOwnProperty("address")){
+        //    console.log(content.address.country)
+        //}
+        //var countryCall = content.address.country;
+        //console.log(countryCall);
+        //console.log("homeaddress");
+        //$(document).ready(() => {
+          //  $('body').click(() => {
+          //    var searchTerm = countryCall;
               //API url with search term
-              var baseUrl ="https://en.wikipedia.org/w/api.php?action=opensearch&search=" + searchTerm + "&format=json&callback=?";
+          //    var baseUrl ="https://en.wikipedia.org/w/api.php?action=opensearch&search=" + searchTerm + "&format=json&callback=?";
               
-              $.ajax({
-                type:"GET",
-                url: baseUrl,
-                async: false,
-                dataType: "json",
-                success: (data) => {
+          //    $.ajax({
+          //      type:"GET",
+          //      url: baseUrl,
+          //      async: false,
+          //      dataType: "json",
+          //      success: (data) => {
                   // console.log(data[1][0]); // Title Item 1
                   // console.log(data[2][0]); // Description Item 1
                   // console.log(data[3][0]); // Link Item 1
@@ -840,23 +893,26 @@ var latitude, longitude;
                 //     $('#output').append('<hr>'); 
                 //   }
                 //   $("#searchTerm").val('');
-                console.log(data);
-                  
-                }, //end success
-                error: (errorMessage) => {
-                  alert("Error");
-                }
-              }); // end ajax
-            }); // end click
-            
-            /* Enter Button = 13 */
-            $("#searchTerm").keypress((e) => {
-              if(e.which==13){
-                $("#search").click();
-              }
-            });
-            
-          }); // end ready
+          //      console.log(data);
+          //        
+          //      }, //end success
+          //      error: (errorMessage) => {
+          //        alert("Error");
+          //      }
+          //    }); // end ajax
+          //  }); // end click
+          //  
+          //  /* Enter Button = 13 */
+          //  $("#searchTerm").keypress((e) => {
+          //    if(e.which==13){
+          //      $("#search").click();
+          //    }
+          //  });
+          //  
+          //}); // end ready
+
+        getData(φ, λ);
+
         
         clearLocationDetails(false);  // clean the slate
         activeLocation = {point: point, coord: coord};  // remember where the current location is
@@ -879,15 +935,72 @@ var latitude, longitude;
             }
         }
     }
+
+    function getData(latitude, longitude) {
+        httpGetAsync("/api/basic?lat="+latitude+"&lon="+longitude, function (input) {
+            var content = JSON.parse(input);
+
+            if(!content.hasOwnProperty("Error")){
+                var country = content["Country"]
+                console.log(country);
+                httpGetAsync("/api/NASA/"+country, function(input){
+                    
+                    var contentValues = {
+                      "Country": country,
+                      'media': JSON.parse(input)
+                    }
+                    
+                    populateModalContent(contentValues);
+                });
+            }
+        });
+    }
+
+    function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
     
     function showDetailsDialog(){
-      document.getElementById('region-summary-modal');
-      jQuery('#region-summary-modal');
+      
+      if(jQuery('#foreground path[d]').length > 0){
+        
+        if (modalContent['title'] != '' ){
+          $('#region-modal-summary-modal .modal-title').text(modalContent['title']);
+          // console.log('title',modalContent['title']);
+        }
+        
+        if (modalContent['body'] != '' ){
+          $('#region-modal-summary-modal .modal-body .modal-body-text').text(modalContent['body']);
+          // console.log('body',modalContent['body']);
+        }
+        
+        if (modalContent['images'].length > 0){
+          var previewUrl = modalContent['images'][0];
+          $('#region-modal-summary-modal .modal-body .modal-body-preview-image').prop('src', previewUrl);
+          // console.log('image', previewUrl);
+        }
+        
+        // title: '',
+        // body: '',
+        // images: '',
+        // video: ''
+        
+        $('#region-modal-summary-modal').modal('toggle');
+      } else if ( jQuery('#region-summary-modal').hasClass('open-dialog') ) {
+        
+        $('#region-modal-summary-modal').modal('toggle');
+      }
     }
 
     function updateLocationDetails() {
         showLocationDetails(activeLocation.point, activeLocation.coord);
-        showDetailsDialog(activeLocation.point, activeLocation.coord);
     }
 
     function clearLocationDetails(clearEverything) {
@@ -957,14 +1070,14 @@ var latitude, longitude;
             .attr("width", (d3.select("#menu").node().offsetWidth - label.offsetWidth) * 0.97)
             .attr("height", label.offsetHeight / 2);
 
-        d3.select("#show-menu").on("click", function() {
-            if (µ.isEmbeddedInIFrame()) {
-                window.open("http://earth.nullschool.net/" + window.location.hash, "_blank");
-            }
-            else {
-                d3.select("#menu").classed("invisible", !d3.select("#menu").classed("invisible"));
-            }
-        });
+        // d3.select("#show-menu").on("click", function() {
+        //     if (µ.isEmbeddedInIFrame()) {
+        //         window.open("http://earth.nullschool.net/" + window.location.hash, "_blank");
+        //     }
+        //     else {
+        //         d3.select("#menu").classed("invisible", !d3.select("#menu").classed("invisible"));
+        //     }
+        // });
 
         if (µ.isFF()) {
             // Workaround FF performance issue of slow click behavior on map having thick coastlines.
@@ -1071,6 +1184,7 @@ var latitude, longitude;
 
         // Add event handlers for showing, updating, and removing location details.
         inputController.on("click", showLocationDetails);
+        
         fieldAgent.on("update", updateLocationDetails);
         d3.select("#location-close").on("click", _.partial(clearLocationDetails, true));
 
