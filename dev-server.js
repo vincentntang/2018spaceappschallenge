@@ -52,10 +52,21 @@ app.use(cacheControl());
 app.use(logger());
 app.use(express.static("public"));
 
+class DataNasa {
+    constructor(input) {
+        var data = input["data"][0];
+        this.keywords = data["keywords"];
+        this.title = data["title"];
+        this.description = data["description"];
+        this.center = data["center"];
+        this.media_type = data["media_type"];
+        this.multimedia_url = input["href"];
+    }
+}
 
-app.get('/api/NASA/:place', function (req, res){
-    var place = req.params.place;
+function getNasaStuff(place, req, res){
     var url = "https://images-api.nasa.gov/search?q=" + place;
+
     request(url, function (error, response, body){
         //Request error
         if (error) {
@@ -68,42 +79,33 @@ app.get('/api/NASA/:place', function (req, res){
             var ready = 0;
 
             for (var i = 0; i < items.length; i++) {
-                var item = new DataNasa(items[i]);
+                items[i] = new DataNasa(items[i]);
 
-                request(item.multimedia_url, function (error, response, body){
+                request(items[i].multimedia_url, function (error, response, body){
+                    
                     //Error while trying to pull image
                     if(error) {
                         ready += 1
                     }
                     //Request success
                     else {
-                        item.multimedia_url = JSON.parse(body)[0];
+                        items[ready].multimedia_url = JSON.parse(body)[0];
 
                         ready += 1;
-
-                        readyToSend.push(item);
                     }
-                    //Do anyways
+
+                    //Do anyways - When finished send everything
                     if(ready==items.length-1){
-                        res.json(readyToSend);
+                        res.json({
+                            "Country": place,
+                            "Items": items
+                        });
                     }
                 });
             }
         }
     });
-
-    class DataNasa {
-        constructor(input) {
-            var data = input["data"][0];
-            this.keywords = data["keywords"];
-            this.title = data["title"];
-            this.description = data["description"];
-            this.center = data["center"];
-            this.media_type = data["media_type"];
-            this.multimedia_url = input["href"];
-        }
-    }
-});
+}
 
 app.get('/api/basic', function(req, res){
     var latitude = +req.query.lat;
@@ -111,7 +113,7 @@ app.get('/api/basic', function(req, res){
 
     //I have to cache the information
     const options = {
-        url: "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=1&addressdetails=1&accept-language=en",
+        url: "https://nominatim.openstreetmap.org/reverse?format=json&lat="+latitude+"&lon="+longitude+"&zoom=0&addressdetails=1&accept-language=en",
         headers: {
             'User-Agent': 'Orbis Pictus'
         }
@@ -130,12 +132,10 @@ app.get('/api/basic', function(req, res){
         //No errors
         else {
             var content = JSON.parse(body);
-            //User hits land
-            console.log(content);
+
             if(content.hasOwnProperty("address")) {
-                res.json({
-                    "Country": content["address"]["country"]
-                });
+                var country = content["address"]["country"];
+                getNasaStuff(country, req, res);
             }
             //User hits ocean
             else {
@@ -144,15 +144,6 @@ app.get('/api/basic', function(req, res){
                 });
             }
         }
-        
-
-
-        /*
-        if(content.hasOwnProperty("address")){
-            request("https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles="+content.address.country, function(error, response, body){
-                res.send(body);
-            });
-        }*/
     });
 });
 

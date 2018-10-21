@@ -829,11 +829,10 @@
             var content = JSON.parse(input);
 
             if(!content.hasOwnProperty("Error")){
-                var country = content["Country"]
+                var country = content["Country"];
+                var items = content["Items"];
                 console.log(country);
-                httpGetAsync("/api/NASA/"+country, function(input){
-                    console.log("Ready pictures from "+country);
-                });
+                console.log(`There are ${items.length} pictures of ${country}`);
             }
         });
     }
