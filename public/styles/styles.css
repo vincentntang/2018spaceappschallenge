@@ -4,6 +4,7 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+@import url(https://fonts.googleapis.com/css?family=Electrolize);
 *,
 *::before,
 *::after {
@@ -6829,6 +6830,70 @@ svg {
 
 #display {
   cursor: default; }
+
+.btn-info.random-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 5rem;
+  max-width: 80%;
+  min-width: 10rem; }
+
+.coolbox {
+  overflow: hidden;
+  display: block;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 2rem;
+  height: auto;
+  color: white;
+  margin: 50px auto;
+  padding: 1rem 5rem;
+  font-weight: 600;
+  text-align: center;
+  font-size: 34px;
+  text-shadow: 0px 0px 12px black;
+  z-index: 3; }
+
+.coolbox:before {
+  z-index: 4;
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 596px;
+  height: 146px; }
+
+.coolbox:after {
+  content: "";
+  position: absolute;
+  top: -349px;
+  left: 49px;
+  width: 502px;
+  height: 849px;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  transform-origin: 50% 50%;
+  z-index: -1; }
+
+.green {
+  box-shadow: -12px -12px 4px -10px rgba(0, 128, 128, 0.2), 12px 12px 4px -10px rgba(0, 128, 128, 0.2); }
+  .green:before {
+    box-shadow: -20px -20px 0 2px teal, 20px 20px 0 2px teal; }
+  .green:after {
+    background-image: linear-gradient(225deg, rgba(0, 128, 128, 0.6) 30%, rgba(0, 23, 23, 0.6) 50%);
+    border-left: 2px solid teal;
+    border-right: 2px solid teal;
+    box-shadow: 0px 0px 4px 4px rgba(0, 128, 128, 0.2), inset 0px 0px 50px 4px rgba(0, 128, 128, 0.5); }
+  .green:hover {
+    text-shadow: 0px 0px 8px teal;
+    box-shadow: -12px -12px 25px -10px rgba(0, 128, 128, 0.6), 12px 12px 25px -10px rgba(0, 128, 128, 0.6); }
+    .green:hover:after {
+      background-image: linear-gradient(225deg, rgba(0, 128, 128, 0.8) 30%, rgba(0, 23, 23, 0.8) 50%); }
 
 #region-modal-summary-modal .modal-dialog {
   position: absolute;
