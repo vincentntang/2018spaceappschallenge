@@ -5,28 +5,42 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        jshint: {
-            files: ["*.js", "public/libs/earth/**/*.js"],
+        concurrent: {
+            dev: [
+                // 'jshint',
+                'watch'
+            ],
             options: {
-                // ignores: [""],
-                globals: {
-                    Buffer: false,
-                    console: false,
-                    exports: false,
-                    module: false,
-                    process: false,
-                    require: false,
-                    __dirname: false
-                },
-                globalstrict: true
+                logConcurrentOutput: true
             }
+        },
+        sass: {
+          dist: {
+            files: {
+              'public/styles/styles.css': 'public/styles/scss/main.scss'
+            }
+          }
+        },
+        watch: {
+            files: ["**/*.js", "**/*.html", "**/*.scss"],
+            tasks: [
+                // 'jshint',
+                'sass',
+            ]
         }
     });
-
-    // Load the plugin that provides the "jshint" task.
-    grunt.loadNpmTasks("grunt-contrib-jshint");
+    
+    // grunt.loadNpmTasks('grunt-concurrent');
+    // grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    
+    grunt.event.on('watch', function(action, filepath, target) {
+      grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
+    });
 
     // Default task(s).
-    grunt.registerTask("default", ["jshint"]);
+    grunt.registerTask("default", [ "sass", "watch"]);
 
+    grunt.loadNpmTasks('grunt-browser-sync');
 };

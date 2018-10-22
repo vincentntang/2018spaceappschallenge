@@ -20,6 +20,8 @@
 
     <link rel="alternate" hreflang="x-default" href="http://earth.nullschool.net/"/>
     <link rel="alternate" hreflang="ja" href="http://earth.nullschool.net/jp/"/>
+    <script src="/libs/vendor/jquery-3.3.1.min.js" charset="utf-8"></script>
+    <script src="/libs/vendor/bootstrap.min.js" charset="utf-8"></script>
 </head>
 <body data-lang="en">
 
@@ -32,15 +34,31 @@
         <svg id="foreground" class="fill-screen" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
     </div>
     
-    <div id="region-summary-modal">
-      <div aria-label="Close" class="close">x</div>
-      
-      <div class="preview-image">
+    <a class="coolbox green" href="#">
+      <p>Randomize</p>
+    </a>
+    <!-- <button type="button" class="btn btn-info random-button"></button> -->
+    
+    <div id="region-modal-summary-modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title text-secondary">Modal title</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          
+          <div class="modal-body text-secondary">
+            <img class="modal-body-preview-image" src="" />
+            <p class="modal-body-text">Modal body text goes here.</p>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
-      
-      <div class="preview-text">
-      </div>
-      
     </div>
 
     <div id="sponsor" class="invisible">
@@ -66,7 +84,6 @@
         </div>
 
         <p id="earth">
-            <span id="show-menu" class="text-button" title="menu">earth</span>
             <span id="progress" class="invisible"></span>
         </p>
 
@@ -132,19 +149,15 @@
                 class="proj text-button" id="waterman" title="Waterman Butterfly">WB</span> – <span
                 class="proj text-button" id="winkel3" title="Winkel Tripel">W3</span>
             </p>
-            <p id="lang"><a href="/jp" class="internal-link">日本語</a></p>
-            <p>
-                <a href="about.html" class="internal-link">about</a>
-                <a href="https://www.facebook.com/EarthWindMap" class="social-icon" title="Facebook">&#xe027;</a>
-                <a href="https://twitter.com/cambecc" class="social-icon" title="Twitter">&#xe086;</a>
-            </p>
         </div>
     </div>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js" charset="utf-8"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js" charset="utf-8"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js" charset="utf-8"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.10/d3.min.js" charset="utf-8"></script>
+
+    <script src="/libs/underscore.js/1.6.0/underscore.js" charset="utf-8"></script>
+    <script src="/libs/backbone.js/1.1.0/backbone.js" charset="utf-8"></script>
+    <script src="/libs/topojson/1.1.0/topojson.js" charset="utf-8"></script>
+    <script src="/libs/d3/3.3.10/d3.js" charset="utf-8"></script>
+
 
     <script src="/libs/d3.geo/0.0.0/d3.geo.projection.v0.min.js" charset="utf-8"></script>
     <script src="/libs/d3.geo/0.0.0/d3.geo.polyhedron.v0.min.js" charset="utf-8"></script>

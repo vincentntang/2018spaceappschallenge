@@ -41,7 +41,7 @@ function logger() {
         '":user-agent" :referrer :req[cf-ray] :req[accept-encoding]\\n:request-all\\n\\n:response-all\\n');
 }
 
-var port = process.argv[2];
+var port = 8080;
 var express = require("express");
 var app = express();
 var request = require("request");
@@ -69,11 +69,9 @@ function getNasaStuff(place, req, res){
     var url = "https://images-api.nasa.gov/search?q=" + place;
 
     request(url, function (error, response, body){
-        //Request error
         if (error) {
-            res.json({"Error":"There has been some problems with NASA's servers"});
+            res.json({"Error":"The NASA's servers are not working correctly"});
         }
-        //Request success
         else {
             var items = JSON.parse(body)["collection"]["items"];
             var ready = 0;
@@ -89,7 +87,7 @@ function getNasaStuff(place, req, res){
                     }
                     //Request success
                     else {
-                        if(items[ready].media_type == "image")
+                        if(items[ready] && typeof(items[ready].media_type) != 'undefined' && items[ready].media_type == "image")
                             items[ready].multimedia_url = JSON.parse(body)[JSON.parse(body).length - 4];
 
                         ready += 1;
@@ -121,8 +119,6 @@ app.get('/api/basic', function(req, res){
         }
     }
 
-    //Nominatim API wikipedia
-    //https://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding
     request(options, function(error, response, body){
         //Request errors
         if(error){
