@@ -12,7 +12,10 @@
     "type": "git",
     "url": "git://github.com/RyanHarrigan/2018spaceappschallenge.git"
   },
-  "engine": "node >= 7.10.01",
+  "engine": "node >= 0.10.21",
+  "engines": {
+    "node": "10.3.0"
+  },
   "dependencies": {
     "express": "3.4.4",
     "mkdirp": "0.3.5",
