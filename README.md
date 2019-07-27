@@ -1,23 +1,11 @@
-earth
-=====
+This is our entry for the NASA-Space Apps Challenge 2018
 
-**NOTE: the location of `dev-server.js` has changed from `{repository}/server/` to `{repository}/`**
+The repo is a fork from https://github.com/cambecc/earth, with additional features added on integrating NASA's API for geolocations and points of interest
 
-"earth" is a project to visualize global weather conditions.
-
-A customized instance of "earth" is available at http://earth.nullschool.net.
-
-"earth" is a personal project I've used to learn javascript and browser programming, and is based on the earlier
-[Tokyo Wind Map](https://github.com/cambecc/air) project.  Feedback and contributions are welcome! ...especially
-those that clarify accepted best practices.
-
-building and launching
 ----------------------
 
-After installing node.js and npm, clone "earth" and install dependencies:
+After installing node.js and npm, clone the repo. Then run
 
-    git clone https://github.com/cambecc/earth
-    cd earth
     npm install
 
 Next, launch the development web server:
